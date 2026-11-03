@@ -10,6 +10,7 @@ cities = [
     {"name": "Kyiv", "latitude": 50.4501, "longitude": 30.5234},
     {"name": "Lviv", "latitude": 49.8397, "longitude": 24.0297},
     {"name": "Warsaw", "latitude": 52.2297, "longitude": 21.0122},
+    {"name": "Krakow", "latitude": 50.0647, "longitude": 19.9450},
 ]
 
 

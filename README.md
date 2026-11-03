@@ -38,7 +38,7 @@ spark-de-practice/
 │   └── output/
 │       └── weather/         # Processed Parquet data
 │
-├── tests/                   # Experiments and tests
+├── test/                   # Experiments and tests
 │
 ├── requirements.txt         # Python dependencies
 └── README.md                # Project documentation

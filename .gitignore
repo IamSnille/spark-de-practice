@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+.venv/
+
+# PyCharm
+.idea/
+
+# Spark output
+spark-warehouse/
+metastore_db/
+derby.log
+
+# Temporary files
+*.log
+
+# Generated data
+data/output/
+src/output_parquet/
+data/raw/

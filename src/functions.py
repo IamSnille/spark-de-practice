@@ -27,8 +27,8 @@ def read_data(spark: SparkSession, filepath: str, fmt: str = "csv", **options) -
     if fmt == "csv":
         options = {"header": True, "inferSchema": True, **options}
     df = spark.read.format(fmt).options(**options).load(filepath)
-    print(f"✓ Файл прочитан: {filepath} (формат: {fmt})")
-    print(f"  Строк: {df.count()}, Колонок: {len(df.columns)}")
+    print(f"✓ File is read: {filepath} (format: {fmt})")
+    print(f"  Strings: {df.count()}, Columns: {len(df.columns)}")
     return df
 
 
@@ -42,8 +42,8 @@ def clean(df: DataFrame) -> DataFrame:
     df = df.withColumn("date", expr("try_cast(date as date)"))
     df = df.dropna()
     rows_after = df.count()
-    print(f"✓ Данные очищены")
-    print(f"  Удалено строк: {rows_before - rows_after}")
+    print(f"✓ data cleared")
+    print(f"  Deleted strings: {rows_before - rows_after}")
     return df
 
 
@@ -56,8 +56,8 @@ def transform(df: DataFrame) -> DataFrame:
         spark_sum("total").alias("total_sum"),
         mean("amount").alias("avg_amount")
     )
-    print(f"✓ Трансформация выполнена")
-    print(f"  Уникальных категорий: {result.count()}")
+    print(f"✓ Transformation is complete")
+    print(f"  Unique category: {result.count()}")
     return result
 
 
@@ -68,4 +68,4 @@ def write_data(df: DataFrame, filepath: str, fmt: str = "csv", **options) -> Non
     if fmt == "csv":
         options = {"header": True, **options}
     df.coalesce(1).write.format(fmt).mode("overwrite").options(**options).save(filepath)
-    print(f"✓ Данные сохранены в {filepath} (формат: {fmt})")
+    print(f"✓ Data is saved in {filepath} (format: {fmt})")

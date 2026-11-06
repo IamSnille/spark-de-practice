@@ -1,9 +1,7 @@
-import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import requests
-
+import requests, json
 
 # 1. Cities
 cities = [

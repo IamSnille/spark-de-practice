@@ -1,71 +1,56 @@
 Weather Data Pipeline
 
-Project Description
-
-This project collects historical weather data for Kyiv, Lviv, and Warsaw using the Open-Meteo API. The data is processed with Apache Spark and stored in Parquet format for further analysis.
+A small PySpark project: it downloads historical weather for Kyiv, Lviv, Warsaw and Krakow from the Open-Meteo API, reads the raw JSON with Spark using an explicit schema, flattens it and saves Parquet partitioned by date.
 
 Data Flow
 
-Open-Meteo API
-      |
-      v
-  Raw JSON files
-      |
-      v
-  Apache Spark
-      |
-      v
-  Flattened DataFrame
-      |
-      v
-  Parquet files
-  (partitioned by date)
+Open-Meteo API -> raw JSON (data/raw/weather) -> Spark -> Parquet partitioned by date (data/output/weather)
 
 Project Structure
-
 spark-de-practice/
-│
 ├── src/
-│   ├── main.py              # Main Spark processing job
-│   ├── ingest_api.py        # Downloads weather data from Open-Meteo API
-│   ├── raw_to_parquet.py    # Raw JSON to Parquet processing
-│   └── functions.py         # Helper functions
-│
+│   ├── ingest_api.py       # downloads raw JSON from the API
+│   ├── raw_to_parquet.py   # raw JSON -> flat DataFrame -> Parquet
+│   ├── functions.py        # ETL functions: read_data, clean, transform, write_data
+│   └── main.py             # runs the functions from functions.py
 ├── data/
-│   ├── raw/
-│   │   └── weather/         # Raw JSON files from the API
-│   │
-│   └── output/
-│       └── weather/         # Processed Parquet data
-│
-├── test/                   # Experiments and tests
-│
-├── requirements.txt         # Python dependencies
-└── README.md                # Project documentation
+│   ├── raw/weather/        # raw JSON files (generated)
+│   └── output/             # Parquet files (generated)
+├── tests/
+├── requirements.txt
+└── README.md
 
-How to Run
+data/ and venv/ are created locally and are not stored in Git.
 
-1. Install requirements
+Requirements
 
+Python 3.10+, Java 17+, Git.
+
+Setup
+bash
+git clone https://github.com/IamSnille/spark-de-practice.git
+cd spark-de-practice
+python -m venv venv
+venv\Scripts\Activate.ps1        # Linux / macOS: source venv/bin/activate
 pip install -r requirements.txt
+Run
 
-2. Run the ingestion script
+Run from the project root:
 
-python src/ingest_api.py
+bash
+python src/ingest_api.py         # 1. download JSON to data/raw/weather/
+python src/main.py    # 2. Spark: JSON -> Parquet in data/output/weather/
+Output
 
-This downloads weather data from the Open-Meteo API and saves it as JSON files in data/raw/weather/.
+One row per city per day:
 
-3. Run the Spark job
-
-python src/raw_to_parquet.py
-
-This reads the raw weather JSON files, applies an explicit schema, flattens the daily weather arrays, and writes the result to Parquet files partitioned by date.
-
+Column	Description
+city	City name
+latitude, longitude	Coordinates
+date	Date (partition column)
+temp_max, temp_min	Daily max / min temperature
+precipitation_mm	Daily precipitation
 What I Learned
-
-Explicit Schema: Defining a schema manually with StructType, StructField, and ArrayType instead of relying on automatic schema inference.
-
-Flattening Nested Data: Using arrays_zip() and explode() to transform nested JSON arrays into individual daily records.
-
-Parquet and Partitioning: Writing data in Parquet format and partitioning it by date to improve query performance through partition pruning.
-
+Defining an explicit schema with StructType instead of letting Spark guess it.
+Flattening nested arrays with arrays_zip() and explode().
+Writing Parquet partitioned by date and checking partition pruning with explain().

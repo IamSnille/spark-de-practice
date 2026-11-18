@@ -99,3 +99,4 @@ print(f"JSON size: {raw_size / 1024:.2f} KB")
 print(f"Parquet size: {parquet_size / 1024:.2f} KB")
 
 spark.stop()
+

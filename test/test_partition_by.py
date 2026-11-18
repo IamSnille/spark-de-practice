@@ -89,7 +89,7 @@ weather_flat_df.show(10, truncate=False)
 
 print("Total rows:", weather_flat_df.count())
 
-output_path = Path(__file__).resolve().parent.parent / "data" / "output" / "weather"
+output_path = Path(__file__).resolve().parent.parent / "data" / "output" / "weather2"
 
 weather_flat_df.write \
     .mode("overwrite") \

@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# test for functions
+.pytest_cache/
+
 # Virtual environments
 venv/
 .venv/
@@ -20,4 +23,3 @@ derby.log
 
 # Data
 data/
-src/output_parquet/

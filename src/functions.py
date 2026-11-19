@@ -1,4 +1,4 @@
-
+import logging
 import os
 import sys
 
@@ -21,6 +21,8 @@ from pyspark.sql.functions import (
     to_date,
     round
 )
+
+logger = logging.getLogger(__name__)
 
 SUPPORTED_FORMATS = {"csv", "json", "parquet", "orc"}
 
@@ -77,8 +79,8 @@ def read_data(
     else:
         df = spark.read.format(fmt).options(**options).load(filepath)
 
-    print(f"✓ File is read: {filepath} (format: {fmt})")
-    print(f"  Rows: {df.count()}, Columns: {len(df.columns)}")
+    logger.info("File is read: %s (format: %s)", filepath, fmt)
+    logger.info("Rows: %d, Columns: %d", df.count(), len(df.columns))
 
     return df
 
@@ -112,7 +114,7 @@ def clean(df: DataFrame) -> DataFrame:
 
     df = df.dropna()
 
-    print("✓ Weather data cleaned and flattened")
+    logger.info("Weather data cleaned and flattened")
 
     return df
 
@@ -128,8 +130,8 @@ def transform(df: DataFrame) -> DataFrame:
         )
     )
 
-    print("✓ Transformation is complete")
-    print(f"  Rows: {df.count()}")
+    logger.info("Transformation is complete")
+    logger.info("Rows: %d", df.count())
 
     return df
 
@@ -156,4 +158,4 @@ def write_data(
     else:
         writer.save(filepath)
 
-    print(f"✓ Data is saved in {filepath} (format: {fmt})")
+    logger.info("Data is saved in %s (format: %s)", filepath, fmt)

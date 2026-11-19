@@ -1,7 +1,17 @@
+import json
+import logging
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import requests, json
+import requests
+
+logging.basicConfig(
+    level=logging.INFO,
+    stream=sys.stdout,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 # 1. Cities
 cities = [
@@ -60,20 +70,20 @@ for city in cities:
         with open(output_path, "w", encoding="utf-8") as file:
             json.dump(weather_data, file, ensure_ascii=False, indent=4)
 
-        print(f"Saved: {output_path}")
+        logger.info("Saved: %s", output_path)
 
     except requests.exceptions.RequestException as e:
         # network errors, timeout, HTTP 4xx/5xx
-        print(f"Failed for {city['name']}: {e}")
+        logger.error("Failed for %s: %s", city["name"], e)
         failed.append(city["name"])
     except (ValueError, OSError) as e:
         # invalid JSON in the response or file write error
-        print(f"Error processing {city['name']}: {e}")
+        logger.error("Error processing %s: %s", city["name"], e)
         failed.append(city["name"])
 
 
 # 6. Summary
 if failed:
-    print(f"\nFailed to download: {', '.join(failed)}")
+    logger.error("Failed to download: %s", ", ".join(failed))
 else:
-    print("\nAll cities downloaded successfully")
+    logger.info("All cities downloaded successfully")

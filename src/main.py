@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 
 from pyspark.sql import SparkSession
 
@@ -6,6 +8,14 @@ from functions import read_data, clean, transform, write_data
 
 
 def main():
+    # Logging
+    logging.basicConfig(
+        level=logging.INFO,
+        stream=sys.stdout,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    )
+    logging.getLogger("py4j").setLevel(logging.WARNING)  # hide Spark/py4j service messages
+
     # Project paths
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 

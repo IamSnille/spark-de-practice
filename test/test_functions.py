@@ -4,6 +4,13 @@ from pyspark.sql.types import (
     StructType, StructField, StringType,
     DoubleType, ArrayType
 )
+from pyspark.sql.functions import (
+    col,
+    arrays_zip,
+    explode,
+    to_date,
+    round
+)
 
 from functions import (
     _check_format, read_data, clean,
@@ -89,7 +96,7 @@ def test_read_data_parquet(spark, tmp_path):
 
     assert set(weather_df.columns) == {"city", "temperature"}
     assert weather_df.count() == 2
-
+    assert weather_df.exceptAll(source_df).count() == 0
 
 # --- clean ---
 
@@ -106,8 +113,8 @@ def test_clean(spark):
         )
     ]
 
-    result_df = clean(spark.createDataFrame(data, NESTED_SCHEMA))
 
+    result_df = clean(spark.createDataFrame(data, NESTED_SCHEMA))
     assert result_df.columns == [
         "city", "latitude", "longitude", "date",
         "temperature_max", "temperature_min", "precipitation"
@@ -156,7 +163,7 @@ def test_clean_drops_day_with_missing_value(spark):
     ]
 
     result_df = clean(spark.createDataFrame(data, NESTED_SCHEMA))
-
+    result_df.show()
     rows = result_df.collect()
 
     assert len(rows) == 1
